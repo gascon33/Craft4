@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>CRAFT4SENSE - Private Collection</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #E8D5A3;
+    --gold-dark: #8B6914;
+    --black: #050505;
+    --black-soft: #0E0E0E;
+    --white: #F5F0E8;
+    --white-dim: rgba(245,240,232,0.6);
+  }
+
+- { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html { scroll-behavior: smooth; }
+
+body {
+background: var(–black);
+color: var(–white);
+font-family: ‘Cormorant Garamond’, serif;
+font-weight: 300;
+overflow-x: hidden;
+}
+
+body::before {
+content: ‘’;
+position: fixed; inset: 0;
+background-image: url(“data:image/svg+xml,%3Csvg viewBox=‘0 0 256 256’ xmlns=‘http://www.w3.org/2000/svg’%3E%3Cfilter id=‘noise’%3E%3CfeTurbulence type=‘fractalNoise’ baseFrequency=‘0.9’ numOctaves=‘4’ stitchTiles=‘stitch’/%3E%3C/filter%3E%3Crect width=‘100%25’ height=‘100%25’ filter=‘url(%23noise)’ opacity=‘1’/%3E%3C/svg%3E”);
+opacity: 0.03; pointer-events: none; z-index: 0;
+}
+
+@media (hover: hover) {
+body { cursor: none; }
+.cursor {
+position: fixed; width: 10px; height: 10px;
+background: var(–gold); border-radius: 50%;
+pointer-events: none; z-index: 9999;
+transform: translate(-50%,-50%); mix-blend-mode: screen;
+transition: width .3s, height .3s;
+}
+.cursor-ring {
+position: fixed; width: 36px; height: 36px;
+border: 1px solid rgba(201,168,76,0.5); border-radius: 50%;
+pointer-events: none; z-index: 9998;
+transform: translate(-50%,-50%);
+transition: width .3s, height .3s, border-color .3s;
+}
+.cursor.hover { width: 20px; height: 20px; }
+.cursor-ring.hover { width: 60px; height: 60px; border-color: var(–gold); }
+}
+@media (hover: none) { .cursor, .cursor-ring { display: none; } }
+
+/* ─── HERO ─── */
+#hero {
+position: relative; height: 100svh; min-height: 500px;
+display: flex; flex-direction: column;
+align-items: center; justify-content: center;
+overflow: hidden; padding: 2rem 2rem 4rem; text-align: center;
+}
+.hero-bg {
+position: absolute; inset: 0;
+background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(201,168,76,0.08) 0%, transparent 70%);
+pointer-events: none;
+}
+.deco-line {
+position: absolute;
+background: linear-gradient(90deg, transparent, var(–gold), transparent);
+height: 1px; width: 70%; left: 15%; opacity: 0.25; pointer-events: none;
+}
+.deco-line.top { top: 12%; }
+.deco-line.bottom { bottom: 12%; }
+
+.hero-eyebrow {
+font-family: ‘Cinzel’, serif;
+font-size: clamp(0.9rem, 3.2vw, 1.1rem);
+letter-spacing: 0.3em; color: var(–gold); margin-bottom: 1.5rem;
+opacity: 0; animation: fadeUp 1s ease 0.3s forwards;
+}
+.hero-title {
+font-family: ‘Cinzel’, serif;
+font-size: clamp(2.6rem, 11vw, 9rem);
+font-weight: 400; letter-spacing: 0.06em; line-height: 1; color: var(–white);
+opacity: 0; animation: fadeUp 1.2s ease 0.5s forwards;
+}
+.hero-subtitle {
+font-style: italic;
+font-size: clamp(0.88rem, 3vw, 1.4rem);
+color: var(–gold-light); margin-top: 1.2rem; letter-spacing: 0.12em;
+opacity: 0; animation: fadeUp 1.2s ease 0.8s forwards;
+}
+.hero-divider {
+width: 1px; height: 50px;
+background: linear-gradient(180deg, var(–gold), transparent);
+margin: 2rem auto 0;
+opacity: 0; animation: fadeIn 1s ease 1.2s forwards;
+}
+.scroll-hint {
+font-family: ‘Cinzel’, serif;
+font-size: 1rem; letter-spacing: 0.3em; color: var(–gold-dark); margin-top: 0.8rem;
+opacity: 0; animation: fadeIn 1s ease 1.5s forwards;
+}
+
+/* ─── INTRO ─── */
+#intro { max-width: 680px; margin: 0 auto; padding: 8vh 1.5rem 6vh; text-align: center; }
+.section-label {
+font-family: ‘Cinzel’, serif;
+font-size: clamp(0.9rem, 3vw, 1.05rem);
+letter-spacing: 0.35em; color: var(–gold); display: block; margin-bottom: 1.5rem;
+}
+#intro p { font-size: clamp(1.15rem, 4vw, 1.5rem); line-height: 1.9; color: var(–white-dim); }
+
+/* ─── COLLECTION ─── */
+#collection { padding: 2vh 0 14vh; max-width: 1400px; margin: 0 auto; }
+.collection-header { text-align: center; margin-bottom: 5vh; padding: 0 1.5rem; }
+.collection-header h2 {
+font-family: ‘Cinzel’, serif;
+font-size: clamp(2rem, 6.5vw, 3.2rem); font-weight: 400; letter-spacing: 0.1em; color: var(–white);
+}
+.gold-rule { width: 60px; height: 1px; background: var(–gold); margin: 1.2rem auto; opacity: 0.6; }
+
+/* ─── GRID ─── */
+.products-grid {
+display: grid; grid-template-columns: 1fr;
+gap: 1px; background: rgba(201,168,76,0.08);
+}
+@media (min-width: 600px) {
+.products-grid { grid-template-columns: repeat(2,1fr); }
+.product-card.featured { grid-column: span 2; }
+}
+@media (min-width: 960px) {
+.products-grid { grid-template-columns: repeat(3,1fr); }
+.product-card.featured { grid-column: span 3; }
+}
+
+/* ─── CARD ─── */
+.product-card {
+background: var(–black-soft);
+padding: clamp(2rem,5vw,3.5rem) clamp(1.2rem,4vw,2.5rem);
+display: flex; flex-direction: column; align-items: center; text-align: center;
+user-select: none; position: relative; transition: background .4s;
+}
+.product-card::before {
+content: ‘’; position: absolute; inset: 0;
+background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(201,168,76,0.06) 0%, transparent 70%);
+opacity: 0; transition: opacity .5s; pointer-events: none;
+}
+.product-card.selected { background: #111108; }
+.product-card.selected::before { opacity: 1; }
+
+.product-age {
+font-family: ‘Cinzel’, serif;
+font-size: clamp(2.8rem,10vw,5rem); font-weight: 600; color: var(–gold); line-height: 1;
+}
+.product-age-label {
+font-family: ‘Cinzel’, serif;
+font-size: clamp(0.9rem,2.8vw,1rem); letter-spacing: 0.3em; color: var(–gold-dark);
+margin-top: 0.3rem; display: block;
+}
+.product-name {
+font-size: clamp(1.7rem,5.5vw,2.4rem); font-weight: 300; color: var(–white);
+margin: 1.2rem 0 0.6rem; letter-spacing: 0.04em;
+}
+.product-desc {
+font-size: clamp(1.15rem,3.8vw,1.28rem); color: var(–white-dim);
+line-height: 1.8; margin-bottom: 1.5rem; font-style: italic; max-width: 340px;
+}
+.bottle-icon {
+width: 1px; height: 45px;
+background: linear-gradient(180deg, var(–gold), transparent); margin: 0.5rem auto 0;
+}
+
+/* ─── PRICE ─── */
+.product-price-block {
+margin-top: 1.2rem;
+text-align: center;
+}
+.price-retail {
+font-family: ‘Cinzel’, serif;
+font-size: clamp(0.95rem, 2.8vw, 1.05rem);
+letter-spacing: 0.2em;
+color: var(–gold-dark);
+text-decoration: line-through;
+display: block;
+margin-bottom: 0.25rem;
+}
+.price-preorder {
+font-family: ‘Cinzel’, serif;
+font-size: clamp(1.5rem, 4.5vw, 1.9rem);
+font-weight: 600;
+color: var(–gold);
+letter-spacing: 0.04em;
+display: block;
+}
+.price-preorder-label {
+font-family: ‘Cinzel’, serif;
+font-size: clamp(0.88rem, 2.5vw, 0.98rem);
+letter-spacing: 0.3em;
+color: rgba(201,168,76,0.55);
+display: block;
+margin-top: 0.2rem;
+}
+
+/* ─── QTY ─── */
+.qty-control {
+display: flex; align-items: stretch; margin-top: 1.8rem;
+border: 1px solid rgba(201,168,76,0.3);
+}
+.qty-btn {
+min-width: 52px; height: 52px; background: transparent; color: var(–gold);
+font-size: 1.4rem; border: none; display: flex; align-items: center; justify-content: center;
+cursor: pointer; touch-action: manipulation; transition: background .2s, color .2s; padding: 0 1rem;
+}
+.qty-btn:active { background: var(–gold); color: var(–black); }
+@media (hover: hover) { .qty-btn:hover { background: var(–gold); color: var(–black); } }
+
+.qty-number {
+font-family: ‘Cinzel’, serif; font-size: 1.1rem; color: var(–white);
+min-width: 3rem; text-align: center;
+border-left: 1px solid rgba(201,168,76,0.2); border-right: 1px solid rgba(201,168,76,0.2);
+display: flex; align-items: center; justify-content: center;
+}
+
+/* ─── ADD BTN ─── */
+.add-btn {
+margin-top: 1rem; font-family: ‘Cinzel’, serif;
+font-size: clamp(0.95rem,2.8vw,1.05rem); letter-spacing: 0.25em; color: var(–gold);
+background: transparent; border: 1px solid rgba(201,168,76,0.3);
+padding: 1rem clamp(1rem,4vw,2rem);
+cursor: pointer; touch-action: manipulation; width: 100%; max-width: 260px;
+transition: background .3s, color .3s, border-color .3s;
+}
+.add-btn:active, .add-btn.active { background: var(–gold); color: var(–black); border-color: var(–gold); }
+@media (hover: hover) { .add-btn:hover { background: var(–gold); color: var(–black); border-color: var(–gold); } }
+
+/* ─── ORDER BAR ─── */
+#order-summary {
+position: fixed; bottom: 0; left: 0; right: 0;
+background: rgba(5,5,5,0.97); border-top: 1px solid rgba(201,168,76,0.25);
+padding: 0.9rem 1.2rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+transform: translateY(100%); transition: transform .5s cubic-bezier(0.16,1,0.3,1);
+z-index: 500; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+}
+#order-summary.visible { transform: translateY(0); }
+.summary-info { flex: 1; min-width: 0; }
+.summary-label {
+font-family: ‘Cinzel’, serif; font-size: 0.92rem; letter-spacing: 0.3em; color: var(–gold-dark); display: block;
+}
+.summary-items {
+font-size: 1.15rem; color: var(–white-dim); font-style: italic;
+margin-top: 0.2rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.submit-btn {
+font-family: ‘Cinzel’, serif; font-size: clamp(0.92rem,2.8vw,1rem); letter-spacing: 0.2em;
+color: var(–black); background: var(–gold); border: none; padding: 0.9rem 1.4rem;
+cursor: pointer; white-space: nowrap; touch-action: manipulation; transition: background .3s; flex-shrink: 0;
+}
+.submit-btn:active { background: var(–gold-light); }
+
+/* ─── MODAL ─── */
+.modal-overlay {
+position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 800;
+display: flex; align-items: flex-end; justify-content: center;
+opacity: 0; pointer-events: none; transition: opacity .4s ease;
+}
+@media (min-width: 600px) { .modal-overlay { align-items: center; padding: 2rem; } }
+.modal-overlay.active { opacity: 1; pointer-events: all; }
+
+.modal {
+background: var(–black-soft); border: 1px solid rgba(201,168,76,0.25); border-bottom: none;
+padding: 2rem 1.4rem 2rem; width: 100%; max-width: 520px; max-height: 92svh; overflow-y: auto;
+position: relative; transform: translateY(40px); transition: transform .5s cubic-bezier(0.16,1,0.3,1);
+-webkit-overflow-scrolling: touch;
+}
+@media (min-width: 600px) { .modal { border-bottom: 1px solid rgba(201,168,76,0.25); padding: 2.8rem 2.2rem; } }
+.modal-overlay.active .modal { transform: translateY(0); }
+
+.modal-handle {
+width: 40px; height: 3px; background: rgba(201,168,76,0.3); border-radius: 2px;
+margin: 0 auto 1.5rem; display: block;
+}
+@media (min-width: 600px) { .modal-handle { display: none; } }
+
+.modal-close {
+position: absolute; top: 1rem; right: 1rem; background: none; border: none;
+color: var(–gold-dark); font-size: 1.1rem; cursor: pointer; padding: 0.5rem; touch-action: manipulation;
+}
+.modal-close:active { color: var(–gold); }
+
+.modal h3 {
+font-family: ‘Cinzel’, serif; font-size: clamp(1.1rem,4vw,1.5rem); font-weight: 400;
+letter-spacing: 0.1em; color: var(–white); margin-bottom: 0.4rem;
+}
+.modal-subtitle { font-style: italic; color: var(–gold-light); font-size: 0.95rem; margin-bottom: 1.8rem; display: block; }
+
+.order-lines { border-top: 1px solid rgba(201,168,76,0.15); margin-bottom: 1.8rem; }
+.order-line {
+display: flex; justify-content: space-between; align-items: center;
+padding: 0.75rem 0; border-bottom: 1px solid rgba(201,168,76,0.08); gap: 1rem;
+}
+.order-line-name { font-size: 0.9rem; color: var(–white-dim); font-style: italic; }
+.order-line-qty { font-family: ‘Cinzel’, serif; font-size: 0.8rem; color: var(–gold); white-space: nowrap; }
+
+.form-group { margin-bottom: 1.1rem; }
+.form-group label {
+font-family: ‘Cinzel’, serif; font-size: 0.9rem; letter-spacing: 0.3em; color: var(–gold-dark);
+display: block; margin-bottom: 0.5rem;
+}
+.form-group input, .form-group textarea {
+width: 100%; background: rgba(201,168,76,0.04); border: 1px solid rgba(201,168,76,0.2);
+color: var(–white); font-family: ‘Cormorant Garamond’, serif; font-size: 1rem;
+padding: 0.8rem 0.9rem; outline: none; transition: border-color .3s; border-radius: 0; -webkit-appearance: none;
+}
+.form-group input:focus, .form-group textarea:focus { border-color: var(–gold); }
+.form-group textarea { height: 70px; resize: none; }
+::placeholder { color: rgba(245,240,232,0.2); font-style: italic; }
+
+.modal-submit {
+width: 100%; background: var(–gold); color: var(–black); font-family: ‘Cinzel’, serif;
+font-size: clamp(0.95rem,2.8vw,1.05rem); letter-spacing: 0.24em; border: none; padding: 1.2rem;
+cursor: pointer; touch-action: manipulation; transition: background .3s; margin-top: 0.5rem;
+}
+.modal-submit:active { background: var(–gold-light); }
+
+.success-view { text-align: center; display: none; }
+.success-view.show { display: block; }
+.success-icon {
+width: 54px; height: 54px; border: 1px solid var(–gold); border-radius: 50%;
+display: flex; align-items: center; justify-content: center;
+margin: 0 auto 1.5rem; font-size: 1.3rem; color: var(–gold);
+}
+
+/* ─── FOOTER ─── */
+footer { text-align: center; padding: 5vh 1.5rem 10vh; border-top: 1px solid rgba(201,168,76,0.08); }
+footer p { font-family: ‘Cinzel’, serif; font-size: clamp(0.38rem,1.8vw,0.55rem); letter-spacing: 0.32em; color: rgba(201,168,76,0.3); }
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.reveal { opacity: 0; transform: translateY(22px); transition: opacity .7s ease, transform .7s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+</style>
+
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- HERO -->
+
+<section id="hero">
+  <div class="hero-bg"></div>
+  <div class="deco-line top"></div>
+  <div class="deco-line bottom"></div>
+  <p class="hero-eyebrow">PRIVATE COLLECTION<br>BY INVITATION ONLY</p>
+  <h1 class="hero-title">CRAFT4SENSE</h1>
+  <p class="hero-subtitle">in collaboration with Jacob & Co.</p>
+  <div class="hero-divider"></div>
+  <p class="scroll-hint">EXPLORE COLLECTION</p>
+</section>
+
+<!-- INTRO -->
+
+<section id="intro" class="reveal">
+  <span class="section-label">MANIFESTO</span>
+  <p>Some things cannot be purchased - they can only be received.<br>
+  This collection was created for those who understand the difference between <em>possessing</em> and <em>truly appreciating</em>.</p>
+</section>
+
+<!-- COLLECTION -->
+
+<section id="collection">
+  <div class="collection-header reveal">
+    <span class="section-label">PRIVATE COLLECTION · 2024</span>
+    <h2>Select Your Position</h2>
+    <div class="gold-rule"></div>
+  </div>
+
+  <div class="products-grid">
+
+```
+<!-- Cognac 100 -->
+<div class="product-card featured reveal" data-id="1" data-name="Cognac · Century Reserve">
+  <span class="product-age">100</span>
+  <span class="product-age-label">YEARS OF AGEING</span>
+  <h3 class="product-name">Century Reserve</h3>
+  <p class="product-desc">One of a kind. One hundred years of patience, concentrated in a single sip. Aged in hand-selected barrels of French Limousin oak - a testament to time itself.</p>
+  <div class="bottle-icon"></div>
+  <div class="product-price-block">
+    <span class="price-retail">€ 25,000</span>
+    <span class="price-preorder">€ 10,000</span>
+    <span class="price-preorder-label">PRE-ORDER PRICE</span>
+  </div>
+  <div class="qty-control">
+    <button class="qty-btn" onclick="changeQty(this,-1)">−</button>
+    <span class="qty-number">0</span>
+    <button class="qty-btn" onclick="changeQty(this,1)">+</button>
+  </div>
+  <button class="add-btn" onclick="toggleItem(this)">Add to Order</button>
+</div>
+
+<!-- Cognac 60 -->
+<div class="product-card reveal" data-id="2" data-name="Cognac · Diamond Reserve">
+  <span class="product-age">60</span>
+  <span class="product-age-label">YEARS OF AGEING</span>
+  <h3 class="product-name">Diamond Reserve</h3>
+  <p class="product-desc">Six decades of stillness in the cellars of Charente. Rich and velvety, with notes of dried fruit, dark chocolate and aged oak - elegance without compromise.</p>
+  <div class="bottle-icon"></div>
+  <div class="product-price-block">
+    <span class="price-retail">€ 6,000</span>
+    <span class="price-preorder">€ 3,000</span>
+    <span class="price-preorder-label">PRE-ORDER PRICE</span>
+  </div>
+  <div class="qty-control">
+    <button class="qty-btn" onclick="changeQty(this,-1)">−</button>
+    <span class="qty-number">0</span>
+    <button class="qty-btn" onclick="changeQty(this,1)">+</button>
+  </div>
+  <button class="add-btn" onclick="toggleItem(this)">Add to Order</button>
+</div>
+
+<!-- Cognac 40 -->
+<div class="product-card reveal" data-id="3" data-name="Cognac · Golden Reserve">
+  <span class="product-age">40</span>
+  <span class="product-age-label">YEARS OF AGEING</span>
+  <h3 class="product-name">Golden Reserve</h3>
+  <p class="product-desc">Forty years of mastery. A perfect balance of maturity and freshness - amber-hued, with a long finish of spice, vanilla, and toasted wood.</p>
+  <div class="bottle-icon"></div>
+  <div class="product-price-block">
+    <span class="price-retail">€ 2,500</span>
+    <span class="price-preorder">€ 1,500</span>
+    <span class="price-preorder-label">PRE-ORDER PRICE</span>
+  </div>
+  <div class="qty-control">
+    <button class="qty-btn" onclick="changeQty(this,-1)">−</button>
+    <span class="qty-number">0</span>
+    <button class="qty-btn" onclick="changeQty(this,1)">+</button>
+  </div>
+  <button class="add-btn" onclick="toggleItem(this)">Add to Order</button>
+</div>
+
+<!-- Vodka Gold -->
+<div class="product-card reveal" data-id="4" data-name="Vodka · Or">
+  <span class="product-age" style="font-size:clamp(1.7rem,7vw,2.8rem);letter-spacing:0.03em;">OR</span>
+  <span class="product-age-label">CRAFT4SENSE VODKA</span>
+  <h3 class="product-name">Or - Golden Vodka</h3>
+  <p class="product-desc">Crafted from the finest French wheat, blended by the master artisans of the Cognac region. <em>Or</em> is designed to be savoured at room temperature - never chilled - to reveal its full depth and character.</p>
+  <div class="bottle-icon"></div>
+  <div class="product-price-block">
+    <span class="price-retail">€ 600</span>
+    <span class="price-preorder">€ 300</span>
+    <span class="price-preorder-label">PRE-ORDER PRICE</span>
+  </div>
+  <div class="qty-control">
+    <button class="qty-btn" onclick="changeQty(this,-1)">−</button>
+    <span class="qty-number">0</span>
+    <button class="qty-btn" onclick="changeQty(this,1)">+</button>
+  </div>
+  <button class="add-btn" onclick="toggleItem(this)">Add to Order</button>
+</div>
+
+<!-- Vodka Silver -->
+<div class="product-card reveal" data-id="5" data-name="Vodka · Argent">
+  <span class="product-age" style="font-size:clamp(1.4rem,6vw,2.8rem);letter-spacing:0.02em;">ARGENT</span>
+  <span class="product-age-label">CRAFT4SENSE VODKA</span>
+  <h3 class="product-name">Argent - Silver Vodka</h3>
+  <p class="product-desc">Born from the finest French wheat and shaped by the mastery of Cognac region blending artisans. Pure, precise, and extraordinary in its clarity.</p>
+  <div class="bottle-icon"></div>
+  <div class="product-price-block">
+    <span class="price-retail">€ 500</span>
+    <span class="price-preorder">€ 250</span>
+    <span class="price-preorder-label">PRE-ORDER PRICE</span>
+  </div>
+  <div class="qty-control">
+    <button class="qty-btn" onclick="changeQty(this,-1)">−</button>
+    <span class="qty-number">0</span>
+    <button class="qty-btn" onclick="changeQty(this,1)">+</button>
+  </div>
+  <button class="add-btn" onclick="toggleItem(this)">Add to Order</button>
+</div>
+```
+
+  </div>
+</section>
+
+<!-- ORDER BAR -->
+
+<div id="order-summary">
+  <div class="summary-info">
+    <span class="summary-label">YOUR PRE-ORDER</span>
+    <p class="summary-items" id="summary-text">-</p>
+  </div>
+  <button class="submit-btn" onclick="openModal()">Place Order</button>
+</div>
+
+<!-- MODAL -->
+
+<div class="modal-overlay" id="modal">
+  <div class="modal" id="modal-box">
+    <span class="modal-handle"></span>
+    <button class="modal-close" onclick="closeModal()">✕</button>
+
+```
+<div id="form-view">
+  <h3>Pre-Order</h3>
+  <span class="modal-subtitle">Private Collection · Craft4Sense</span>
+  <div class="order-lines" id="order-lines"></div>
+  <div class="form-group">
+    <label>Your Name</label>
+    <input type="text" id="inp-name" placeholder="First and Last Name" autocomplete="name">
+  </div>
+  <div class="form-group">
+    <label>Contact</label>
+    <input type="text" id="inp-contact" placeholder="+1 (000) 000-0000 · Telegram · WhatsApp" autocomplete="tel">
+  </div>
+  <div class="form-group">
+    <label>Note</label>
+    <textarea id="inp-note" placeholder="Any additional requests…"></textarea>
+  </div>
+  <button class="modal-submit" onclick="submitOrder()">Confirm Pre-Order</button>
+</div>
+
+<div class="success-view" id="success-view">
+  <div class="success-icon">✓</div>
+  <h3 style="margin-bottom:.8rem;">Order Received</h3>
+  <span class="modal-subtitle">Our manager will be in touch shortly</span>
+  <div class="gold-rule"></div>
+  <p style="font-style:italic;color:var(--white-dim);font-size:.95rem;margin-top:1.2rem;line-height:1.8;">
+    Thank you for your trust.<br>Craft4Sense × Jacob & Co.
+  </p>
+</div>
+```
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+
+<footer>
+  <p>CRAFT4SENSE · PRIVATE COLLECTION · JACOB & CO. COLLABORATION · MMXXIV</p>
+  <p style="margin-top:.8rem;">BY INVITATION ONLY</p>
+</footer>
+
+<script>
+  // Custom cursor - desktop only
+  if (window.matchMedia('(hover: hover)').matches) {
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursorRing');
+    let mx = -200, my = -200, rx = -200, ry = -200;
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+    (function tick() {
+      cursor.style.left = mx + 'px'; cursor.style.top = my + 'px';
+      rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
+      ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+      requestAnimationFrame(tick);
+    })();
+    document.querySelectorAll('button,.product-card').forEach(el => {
+      el.addEventListener('mouseenter', () => { cursor.classList.add('hover'); ring.classList.add('hover'); });
+      el.addEventListener('mouseleave', () => { cursor.classList.remove('hover'); ring.classList.remove('hover'); });
+    });
+  }
+
+  // Scroll reveal
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+  // Order state
+  const order = {};
+
+  function changeQty(btn, delta) {
+    const card = btn.closest('.product-card');
+    const numEl = card.querySelector('.qty-number');
+    let val = Math.max(0, parseInt(numEl.textContent) + delta);
+    numEl.textContent = val;
+    syncCard(card, val);
+    updateSummary();
+  }
+
+  function toggleItem(btn) {
+    const card = btn.closest('.product-card');
+    const numEl = card.querySelector('.qty-number');
+    let val = parseInt(numEl.textContent) === 0 ? 1 : 0;
+    numEl.textContent = val;
+    syncCard(card, val);
+    updateSummary();
+  }
+
+  function syncCard(card, val) {
+    const id = card.dataset.id;
+    const btn = card.querySelector('.add-btn');
+    if (val > 0) {
+      order[id] = { name: card.dataset.name, qty: val };
+      card.classList.add('selected');
+      btn.classList.add('active');
+      btn.textContent = 'Added ✓';
+    } else {
+      delete order[id];
+      card.classList.remove('selected');
+      btn.classList.remove('active');
+      btn.textContent = 'Add to Order';
+    }
+  }
+
+  function updateSummary() {
+    const keys = Object.keys(order);
+    const bar = document.getElementById('order-summary');
+    if (keys.length === 0) { bar.classList.remove('visible'); return; }
+    bar.classList.add('visible');
+    document.getElementById('summary-text').textContent =
+      keys.map(k => (order[k].name.split('·')[1]?.trim() || order[k].name) + ' ×' + order[k].qty).join(' · ');
+  }
+
+  function openModal() {
+    if (!Object.keys(order).length) return;
+    document.getElementById('order-lines').innerHTML =
+      Object.values(order).map(i =>
+        `<div class="order-line"><span class="order-line-name">${i.name}</span><span class="order-line-qty">${i.qty} btl.</span></div>`
+      ).join('');
+    document.getElementById('form-view').style.display = '';
+    document.getElementById('success-view').classList.remove('show');
+    document.getElementById('modal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    document.getElementById('modal').classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  document.getElementById('modal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+  });
+
+  async function submitOrder() {
+    const name = document.getElementById('inp-name').value.trim();
+    const contact = document.getElementById('inp-contact').value.trim();
+    const note = document.getElementById('inp-note').value.trim();
+    document.getElementById('inp-name').style.borderColor = name ? 'rgba(201,168,76,0.2)' : '#c0392b';
+    document.getElementById('inp-contact').style.borderColor = contact ? 'rgba(201,168,76,0.2)' : '#c0392b';
+    if (!name || !contact) return;
+
+    const btn = document.querySelector('.modal-submit');
+    btn.textContent = 'Sending...';
+    btn.disabled = true;
+
+    const orderList = Object.values(order).map(i => i.name + ' x' + i.qty).join(', ');
+
+    try {
+      const res = await fetch('https://formspree.io/f/xeeldldg', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          name: name,
+          contact: contact,
+          order: orderList,
+          note: note || '-',
+          _subject: 'NEW PRE-ORDER - Craft4Sense: ' + orderList
+        })
+      });
+      const data = await res.json();
+      if (data.ok || res.ok) {
+        document.getElementById('form-view').style.display = 'none';
+        document.getElementById('success-view').classList.add('show');
+      } else {
+        btn.textContent = 'Error - try again';
+        btn.disabled = false;
+      }
+    } catch(e) {
+      btn.textContent = 'Error - try again';
+      btn.disabled = false;
+    }
+  }
+</script>
+
+</body>
+</html>
