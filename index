@@ -1,683 +1,399 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>CRAFT4SENSE - Private Collection</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
+<title>CRAFT4SENSE — Private Allocation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Cinzel:wght@400&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --gold: #C9A84C;
-    --gold-light: #E8D5A3;
-    --gold-dark: #8B6914;
-    --black: #050505;
-    --black-soft: #0E0E0E;
-    --white: #F5F0E8;
-    --white-dim: rgba(245,240,232,0.6);
-  }
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{background:#050505;color:#FFFFFF;font-family:'Cinzel',serif;font-weight:400;overflow-x:hidden;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;-webkit-text-size-adjust:100%}
 
-- { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  html { scroll-behavior: smooth; }
+/* GATE */
+#gate{position:fixed;inset:0;z-index:100;background:#050505;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:3rem 2rem;transition:opacity 1.2s ease}
+#gate.out{opacity:0;pointer-events:none}
+.g-rule{position:absolute;left:8vw;right:8vw;height:1px;background:linear-gradient(90deg,transparent,#E6C48F44,transparent)}
+.g-rule.t{top:10vh}
+.g-rule.b{bottom:10vh}
+.g-eyebrow{font-family:'Cinzel',serif;font-size:clamp(0.75rem,2.5vw,0.95rem);letter-spacing:0.34em;color:#E6C48F;line-height:2.2;margin-bottom:2.5rem;opacity:0;animation:up 1s ease 0.2s forwards}
+.g-brand{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:clamp(3.5rem,16vw,10rem);letter-spacing:0.03em;color:#F7ECDB;line-height:1;white-space:nowrap;margin-bottom:0.5rem;opacity:0;animation:up 1.2s ease 0.45s forwards}
+.g-craft{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:clamp(1.8rem,7vw,4.5rem);letter-spacing:0.2em;color:#F7ECDB;margin-bottom:0;opacity:0;animation:up 1s ease 0.7s forwards}
+.g-div{width:1px;height:40px;background:linear-gradient(180deg,#E6C48F,transparent);margin:2.5rem auto;opacity:0;animation:fi 1s ease 1s forwards}
+.g-wlabel{font-family:'Cinzel',serif;font-size:clamp(0.75rem,2.5vw,0.95rem);letter-spacing:0.4em;color:#E6C48F;margin-bottom:0.5rem;opacity:0;animation:fi 1s ease 1.2s forwards}
+.g-wdate{font-family:'Cinzel',serif;font-size:clamp(0.75rem,2.5vw,0.95rem);letter-spacing:0.22em;color:#E6C48F;margin-bottom:3rem;opacity:0;animation:fi 1s ease 1.4s forwards}
+.g-enter{font-family:'Cinzel',serif;font-size:clamp(0.75rem,2.5vw,0.95rem);letter-spacing:0.35em;background:#F7ECDB;color:#050505;border:none;padding:1.1rem 2.5rem;cursor:pointer;-webkit-appearance:none;border-radius:0;display:block;margin:0 auto;opacity:0;animation:fi 1s ease 1.6s forwards;transition:opacity .3s}
+.g-enter:active{opacity:0.8}
 
-body {
-background: var(–black);
-color: var(–white);
-font-family: ‘Cormorant Garamond’, serif;
-font-weight: 300;
-overflow-x: hidden;
-}
+/* MAIN */
+#main{opacity:0;transition:opacity 1.2s ease}
+#main.show{opacity:1}
 
-body::before {
-content: ‘’;
-position: fixed; inset: 0;
-background-image: url(“data:image/svg+xml,%3Csvg viewBox=‘0 0 256 256’ xmlns=‘http://www.w3.org/2000/svg’%3E%3Cfilter id=‘noise’%3E%3CfeTurbulence type=‘fractalNoise’ baseFrequency=‘0.9’ numOctaves=‘4’ stitchTiles=‘stitch’/%3E%3C/filter%3E%3Crect width=‘100%25’ height=‘100%25’ filter=‘url(%23noise)’ opacity=‘1’/%3E%3C/svg%3E”);
-opacity: 0.03; pointer-events: none; z-index: 0;
-}
+/* STATUS */
+#status{padding:14vh 2rem 10vh;text-align:center;max-width:640px;margin:0 auto}
+.lbl{font-family:'Cinzel',serif;font-size:clamp(0.9rem,2.8vw,1.1rem);letter-spacing:0.4em;color:#E6C48F;display:block}
+.s-line{width:1px;height:50px;background:linear-gradient(180deg,transparent,#E6C48F,transparent);margin:2.5rem auto}
+.s-text{font-family:'Cinzel',serif;font-size:clamp(0.75rem,2.5vw,0.95rem);line-height:2.6;color:#FFFFFF;letter-spacing:0.14em}
+.s-text em{color:#E6C48F;font-style:normal}
 
-@media (hover: hover) {
-body { cursor: none; }
-.cursor {
-position: fixed; width: 10px; height: 10px;
-background: var(–gold); border-radius: 50%;
-pointer-events: none; z-index: 9999;
-transform: translate(-50%,-50%); mix-blend-mode: screen;
-transition: width .3s, height .3s;
-}
-.cursor-ring {
-position: fixed; width: 36px; height: 36px;
-border: 1px solid rgba(201,168,76,0.5); border-radius: 50%;
-pointer-events: none; z-index: 9998;
-transform: translate(-50%,-50%);
-transition: width .3s, height .3s, border-color .3s;
-}
-.cursor.hover { width: 20px; height: 20px; }
-.cursor-ring.hover { width: 60px; height: 60px; border-color: var(–gold); }
-}
-@media (hover: none) { .cursor, .cursor-ring { display: none; } }
+/* COLLECTION */
+#collection{padding:4vh 0 16vh;max-width:1300px;margin:0 auto}
+.col-header{text-align:center;padding:0 2rem 8vh}
+.col-brand{font-family:'Cormorant Garamond',serif;font-weight:400;line-height:1.1;letter-spacing:0.03em;color:#F7ECDB;display:block}
+.col-jacobco{font-size:clamp(3rem,9vw,5rem);margin-bottom:0.1rem}
+.col-craft{font-size:clamp(2.1rem,6.5vw,3.6rem);margin-bottom:1.5rem}
+.col-title{font-family:'Cinzel',serif;font-size:clamp(0.75rem,2.5vw,0.95rem);letter-spacing:0.17em;color:#FFFFFF}
+.g-rule-h{width:36px;height:1px;background:linear-gradient(90deg,#8B6914,#E8D5A3,#8B6914);margin:1.5rem auto;opacity:0.7}
 
-/* ─── HERO ─── */
-#hero {
-position: relative; height: 100svh; min-height: 500px;
-display: flex; flex-direction: column;
-align-items: center; justify-content: center;
-overflow: hidden; padding: 2rem 2rem 4rem; text-align: center;
-}
-.hero-bg {
-position: absolute; inset: 0;
-background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(201,168,76,0.08) 0%, transparent 70%);
-pointer-events: none;
-}
-.deco-line {
-position: absolute;
-background: linear-gradient(90deg, transparent, var(–gold), transparent);
-height: 1px; width: 70%; left: 15%; opacity: 0.25; pointer-events: none;
-}
-.deco-line.top { top: 12%; }
-.deco-line.bottom { bottom: 12%; }
+/* GRID */
+.grid{display:grid;grid-template-columns:1fr;gap:1px;background:#E6C48F12}
+@media(min-width:700px){.grid{grid-template-columns:repeat(2,1fr)}}
 
-.hero-eyebrow {
-font-family: ‘Cinzel’, serif;
-font-size: clamp(0.9rem, 3.2vw, 1.1rem);
-letter-spacing: 0.3em; color: var(–gold); margin-bottom: 1.5rem;
-opacity: 0; animation: fadeUp 1s ease 0.3s forwards;
-}
-.hero-title {
-font-family: ‘Cinzel’, serif;
-font-size: clamp(2.6rem, 11vw, 9rem);
-font-weight: 400; letter-spacing: 0.06em; line-height: 1; color: var(–white);
-opacity: 0; animation: fadeUp 1.2s ease 0.5s forwards;
-}
-.hero-subtitle {
-font-style: italic;
-font-size: clamp(0.88rem, 3vw, 1.4rem);
-color: var(–gold-light); margin-top: 1.2rem; letter-spacing: 0.12em;
-opacity: 0; animation: fadeUp 1.2s ease 0.8s forwards;
-}
-.hero-divider {
-width: 1px; height: 50px;
-background: linear-gradient(180deg, var(–gold), transparent);
-margin: 2rem auto 0;
-opacity: 0; animation: fadeIn 1s ease 1.2s forwards;
-}
-.scroll-hint {
-font-family: ‘Cinzel’, serif;
-font-size: 1rem; letter-spacing: 0.3em; color: var(–gold-dark); margin-top: 0.8rem;
-opacity: 0; animation: fadeIn 1s ease 1.5s forwards;
-}
+/* CARD */
+.card{background:#0C0C0C;padding:clamp(2.5rem,5vw,4rem) clamp(1.5rem,4vw,3rem);display:flex;flex-direction:column;align-items:center;text-align:center;transition:background .5s}
+.card.open{background:#0f0f08}
+.c-brand{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:clamp(2rem,7vw,3rem);line-height:1;letter-spacing:0.03em;color:#F7ECDB;margin-bottom:0.3rem;display:block;white-space:nowrap}
+.c-num{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:clamp(2rem,7vw,3rem);line-height:1;color:#E6C48F}
+.c-age-lbl{font-family:'Cinzel',serif;font-size:clamp(0.75rem,2.5vw,0.95rem);letter-spacing:0.3em;color:#E6C48F;margin-top:0.5rem;display:block}
+.c-sub{font-family:'Cinzel',serif;font-size:clamp(0.75rem,2.5vw,0.95rem);letter-spacing:0.2em;color:#E6C48F;margin:0.6rem 0 0.4rem}
+.c-name{font-family:'Cinzel',serif;font-size:clamp(0.75rem,2.5vw,0.95rem);letter-spacing:0.13em;color:#FFFFFF;margin:0.8rem 0 2rem}
+.c-table{width:100%;border-top:1px solid #E6C48F22;padding-top:1.4rem;margin-bottom:1.6rem}
+.c-row{display:flex;justify-content:space-between;align-items:baseline;padding:0.5rem 0;border-bottom:1px solid #E6C48F12;gap:0.5rem}
+.c-lbl{font-family:'Cinzel',serif;font-size:clamp(0.75rem,2.5vw,0.95rem);letter-spacing:0.16em;color:#E6C48F;white-space:nowrap;flex-shrink:0}
+.c-val{font-family:'Cinzel',serif;font-size:clamp(0.75rem,2.5vw,0.95rem);color:#FFFFFF;text-align:right}
+.c-price-block{text-align:center;margin-bottom:2rem}
+.c-price-lbl{font-family:'Cinzel',serif;font-size:clamp(0.65rem,2vw,0.8rem);letter-spacing:0.3em;color:#E6C48F;opacity:.6;display:block;margin-bottom:0.8rem}
+.c-price{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:clamp(2rem,7vw,3rem);color:#F7ECDB;display:block;line-height:1}
+.c-req{font-family:'Cinzel',serif;font-size:clamp(0.75rem,2.5vw,0.95rem);letter-spacing:0.28em;padding:0.85rem 1rem;width:100%;display:block;text-align:center;border:1px solid #E6C48F;color:#E6C48F;background:transparent;cursor:pointer;-webkit-appearance:none;border-radius:0;touch-action:manipulation;transition:background .3s,color .3s}
+.c-req:active,.c-req:hover{background:#E6C48F;color:#050505}
+.c-exp{width:100%;overflow:hidden;max-height:0;transition:max-height .65s cubic-bezier(.16,1,.3,1),opacity .4s;opacity:0}
+.c-exp.open{max-height:800px;opacity:1}
+.c-exp-inner{border-top:1px solid #E6C48F20;margin-top:2rem;padding-top:2rem}
+.qty-row{display:flex;align-items:center;justify-content:center;border:1px solid #E6C48F44;margin-bottom:1rem}
+.qty-btn{width:48px;height:48px;background:transparent;color:#E6C48F;font-size:1.3rem;border:none;cursor:pointer;touch-action:manipulation;transition:background .2s,color .2s}
+.qty-btn:active{background:#E6C48F;color:#050505}
+.qty-n{font-family:'Cinzel',serif;font-size:clamp(0.75rem,2.5vw,0.95rem);color:#FFFFFF;min-width:3rem;text-align:center;border-left:1px solid #E6C48F33;border-right:1px solid #E6C48F33;height:48px;display:flex;align-items:center;justify-content:center}
+.c-add{font-family:'Cinzel',serif;font-size:clamp(0.75rem,2.5vw,0.95rem);letter-spacing:.3em;color:#050505;background:#E6C48F;border:none;padding:.9rem;cursor:pointer;width:100%;touch-action:manipulation;transition:opacity .3s;margin-top:.2rem;-webkit-appearance:none;border-radius:0}
+.c-add:active,.c-add.done{opacity:.6}
 
-/* ─── INTRO ─── */
-#intro { max-width: 680px; margin: 0 auto; padding: 8vh 1.5rem 6vh; text-align: center; }
-.section-label {
-font-family: ‘Cinzel’, serif;
-font-size: clamp(0.9rem, 3vw, 1.05rem);
-letter-spacing: 0.35em; color: var(–gold); display: block; margin-bottom: 1.5rem;
-}
-#intro p { font-size: clamp(1.15rem, 4vw, 1.5rem); line-height: 1.9; color: var(–white-dim); }
+/* ORDER BAR */
+#bar{position:fixed;bottom:0;left:0;right:0;background:#050505FA;border-top:1px solid #E6C48F33;padding:1rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;transform:translateY(100%);transition:transform .6s cubic-bezier(.16,1,.3,1);z-index:200;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+#bar.show{transform:translateY(0)}
+.bar-info{flex:1;min-width:0}
+.bar-lbl{font-family:'Cinzel',serif;font-size:clamp(0.65rem,2vw,0.78rem);letter-spacing:.35em;color:#E6C48F;display:block}
+.bar-txt{font-family:'Cinzel',serif;font-size:clamp(0.65rem,2vw,0.78rem);color:#FFFFFF;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:.2rem}
+.bar-btn{font-family:'Cinzel',serif;font-size:clamp(0.65rem,2vw,0.78rem);letter-spacing:.28em;color:#050505;background:#E6C48F;border:none;padding:.85rem 1.3rem;cursor:pointer;white-space:nowrap;touch-action:manipulation;-webkit-appearance:none;border-radius:0;flex-shrink:0}
+.bar-btn:active{opacity:.8}
 
-/* ─── COLLECTION ─── */
-#collection { padding: 2vh 0 14vh; max-width: 1400px; margin: 0 auto; }
-.collection-header { text-align: center; margin-bottom: 5vh; padding: 0 1.5rem; }
-.collection-header h2 {
-font-family: ‘Cinzel’, serif;
-font-size: clamp(2rem, 6.5vw, 3.2rem); font-weight: 400; letter-spacing: 0.1em; color: var(–white);
-}
-.gold-rule { width: 60px; height: 1px; background: var(–gold); margin: 1.2rem auto; opacity: 0.6; }
+/* MODAL */
+.m-ov{position:fixed;inset:0;background:#000000EE;z-index:800;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .4s}
+.m-ov.open{opacity:1;pointer-events:all}
+@media(min-width:600px){.m-ov{align-items:center;padding:2rem}}
+.modal{background:#0C0C0C;border:1px solid #E6C48F33;border-bottom:none;padding:2rem 1.5rem;width:100%;max-width:520px;max-height:92svh;overflow-y:auto;position:relative;transform:translateY(30px);transition:transform .5s cubic-bezier(.16,1,.3,1);-webkit-overflow-scrolling:touch}
+.m-ov.open .modal{transform:translateY(0)}
+@media(min-width:600px){.modal{border-bottom:1px solid #E6C48F33;padding:3rem 2.5rem}}
+.m-handle{width:36px;height:3px;background:#E6C48F33;border-radius:2px;margin:0 auto 2rem;display:block}
+@media(min-width:600px){.m-handle{display:none}}
+.m-close{position:absolute;top:1rem;right:1rem;background:none;border:none;color:#E6C48F;font-family:'Cinzel',serif;font-size:clamp(0.7rem,2.2vw,0.85rem);letter-spacing:.15em;cursor:pointer;padding:.5rem}
+.m-brand{font-family:'Cinzel',serif;font-size:clamp(0.75rem,2.5vw,0.95rem);letter-spacing:.3em;color:#F7ECDB;display:block;margin-bottom:.3rem}
+.m-title{font-family:'Cinzel',serif;font-size:clamp(0.75rem,2.5vw,0.95rem);letter-spacing:0.15em;color:#FFFFFF;margin-bottom:.3rem}
+.m-sub{font-family:'Cinzel',serif;font-size:clamp(0.65rem,2vw,0.78rem);color:#E6C48F;opacity:.6;letter-spacing:.15em;margin-bottom:2rem;display:block}
+.m-lines{border-top:1px solid #E6C48F20;margin-bottom:1.5rem}
+.m-line{display:flex;justify-content:space-between;align-items:baseline;padding:.65rem 0;border-bottom:1px solid #E6C48F12;gap:1rem}
+.m-line-n{font-family:'Cinzel',serif;font-size:clamp(0.7rem,2.2vw,0.85rem);color:#FFFFFF;letter-spacing:.1em}
+.m-line-q{font-family:'Cinzel',serif;font-size:clamp(0.7rem,2.2vw,0.85rem);color:#E6C48F;white-space:nowrap}
+.m-terms{border:1px solid #E6C48F22;padding:1.2rem 1.4rem;margin-bottom:1.8rem}
+.m-terms p{font-family:'Cinzel',serif;font-size:clamp(0.7rem,2.2vw,0.85rem);color:#FFFFFF;opacity:.7;line-height:1.9;letter-spacing:.08em}
+.m-terms p+p{margin-top:.4rem}
+.f-group{margin-bottom:1rem}
+.f-group label{font-family:'Cinzel',serif;font-size:clamp(0.7rem,2.2vw,0.85rem);letter-spacing:.3em;color:#E6C48F;display:block;margin-bottom:.5rem}
+.f-group input,.f-group textarea{width:100%;background:#E6C48F08;border:1px solid #E6C48F2A;color:#FFFFFF;font-family:'Cinzel',serif;font-size:clamp(0.7rem,2.2vw,0.85rem);padding:.82rem .9rem;outline:none;transition:border-color .3s;border-radius:0;-webkit-appearance:none}
+.f-group input:focus,.f-group textarea:focus{border-color:#E6C48F}
+.f-group input.err{border-color:#c0392b}
+.f-group textarea{height:70px;resize:none}
+::placeholder{color:#E6C48F44}
+.m-submit{width:100%;background:#E6C48F;color:#050505;font-family:'Cinzel',serif;font-size:clamp(0.75rem,2.5vw,0.95rem);letter-spacing:.3em;border:none;padding:1.1rem;cursor:pointer;-webkit-appearance:none;border-radius:0;touch-action:manipulation;transition:opacity .3s;margin-top:.5rem}
+.m-submit:active{opacity:.8}
+.m-submit:disabled{opacity:.5}
+.m-success{text-align:center;display:none}
+.m-success.show{display:block}
+.m-check{font-size:1.2rem;color:#E6C48F;width:48px;height:48px;border:1px solid #E6C48F;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.8rem}
 
-/* ─── GRID ─── */
-.products-grid {
-display: grid; grid-template-columns: 1fr;
-gap: 1px; background: rgba(201,168,76,0.08);
-}
-@media (min-width: 600px) {
-.products-grid { grid-template-columns: repeat(2,1fr); }
-.product-card.featured { grid-column: span 2; }
-}
-@media (min-width: 960px) {
-.products-grid { grid-template-columns: repeat(3,1fr); }
-.product-card.featured { grid-column: span 3; }
-}
+/* CONF + FOOTER */
+#conf{border-top:1px solid #E6C48F12;padding:8vh 2rem 10vh;text-align:center;max-width:580px;margin:0 auto}
+.conf-txt{font-family:'Cinzel',serif;font-size:clamp(0.75rem,2.5vw,0.95rem);color:#FFFFFF;opacity:.7;line-height:2.3;letter-spacing:.1em}
+.conf-div{width:28px;height:1px;background:#E6C48F;margin:2.5rem auto;opacity:.3}
+footer{text-align:center;padding:0 2rem 6vh}
+footer p{font-family:'Cinzel',serif;font-size:clamp(0.65rem,2vw,0.78rem);letter-spacing:.3em;color:#E6C48F;opacity:.2}
 
-/* ─── CARD ─── */
-.product-card {
-background: var(–black-soft);
-padding: clamp(2rem,5vw,3.5rem) clamp(1.2rem,4vw,2.5rem);
-display: flex; flex-direction: column; align-items: center; text-align: center;
-user-select: none; position: relative; transition: background .4s;
-}
-.product-card::before {
-content: ‘’; position: absolute; inset: 0;
-background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(201,168,76,0.06) 0%, transparent 70%);
-opacity: 0; transition: opacity .5s; pointer-events: none;
-}
-.product-card.selected { background: #111108; }
-.product-card.selected::before { opacity: 1; }
-
-.product-age {
-font-family: ‘Cinzel’, serif;
-font-size: clamp(2.8rem,10vw,5rem); font-weight: 600; color: var(–gold); line-height: 1;
-}
-.product-age-label {
-font-family: ‘Cinzel’, serif;
-font-size: clamp(0.9rem,2.8vw,1rem); letter-spacing: 0.3em; color: var(–gold-dark);
-margin-top: 0.3rem; display: block;
-}
-.product-name {
-font-size: clamp(1.7rem,5.5vw,2.4rem); font-weight: 300; color: var(–white);
-margin: 1.2rem 0 0.6rem; letter-spacing: 0.04em;
-}
-.product-desc {
-font-size: clamp(1.15rem,3.8vw,1.28rem); color: var(–white-dim);
-line-height: 1.8; margin-bottom: 1.5rem; font-style: italic; max-width: 340px;
-}
-.bottle-icon {
-width: 1px; height: 45px;
-background: linear-gradient(180deg, var(–gold), transparent); margin: 0.5rem auto 0;
-}
-
-/* ─── PRICE ─── */
-.product-price-block {
-margin-top: 1.2rem;
-text-align: center;
-}
-.price-retail {
-font-family: ‘Cinzel’, serif;
-font-size: clamp(0.95rem, 2.8vw, 1.05rem);
-letter-spacing: 0.2em;
-color: var(–gold-dark);
-text-decoration: line-through;
-display: block;
-margin-bottom: 0.25rem;
-}
-.price-preorder {
-font-family: ‘Cinzel’, serif;
-font-size: clamp(1.5rem, 4.5vw, 1.9rem);
-font-weight: 600;
-color: var(–gold);
-letter-spacing: 0.04em;
-display: block;
-}
-.price-preorder-label {
-font-family: ‘Cinzel’, serif;
-font-size: clamp(0.88rem, 2.5vw, 0.98rem);
-letter-spacing: 0.3em;
-color: rgba(201,168,76,0.55);
-display: block;
-margin-top: 0.2rem;
-}
-
-/* ─── QTY ─── */
-.qty-control {
-display: flex; align-items: stretch; margin-top: 1.8rem;
-border: 1px solid rgba(201,168,76,0.3);
-}
-.qty-btn {
-min-width: 52px; height: 52px; background: transparent; color: var(–gold);
-font-size: 1.4rem; border: none; display: flex; align-items: center; justify-content: center;
-cursor: pointer; touch-action: manipulation; transition: background .2s, color .2s; padding: 0 1rem;
-}
-.qty-btn:active { background: var(–gold); color: var(–black); }
-@media (hover: hover) { .qty-btn:hover { background: var(–gold); color: var(–black); } }
-
-.qty-number {
-font-family: ‘Cinzel’, serif; font-size: 1.1rem; color: var(–white);
-min-width: 3rem; text-align: center;
-border-left: 1px solid rgba(201,168,76,0.2); border-right: 1px solid rgba(201,168,76,0.2);
-display: flex; align-items: center; justify-content: center;
-}
-
-/* ─── ADD BTN ─── */
-.add-btn {
-margin-top: 1rem; font-family: ‘Cinzel’, serif;
-font-size: clamp(0.95rem,2.8vw,1.05rem); letter-spacing: 0.25em; color: var(–gold);
-background: transparent; border: 1px solid rgba(201,168,76,0.3);
-padding: 1rem clamp(1rem,4vw,2rem);
-cursor: pointer; touch-action: manipulation; width: 100%; max-width: 260px;
-transition: background .3s, color .3s, border-color .3s;
-}
-.add-btn:active, .add-btn.active { background: var(–gold); color: var(–black); border-color: var(–gold); }
-@media (hover: hover) { .add-btn:hover { background: var(–gold); color: var(–black); border-color: var(–gold); } }
-
-/* ─── ORDER BAR ─── */
-#order-summary {
-position: fixed; bottom: 0; left: 0; right: 0;
-background: rgba(5,5,5,0.97); border-top: 1px solid rgba(201,168,76,0.25);
-padding: 0.9rem 1.2rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem;
-transform: translateY(100%); transition: transform .5s cubic-bezier(0.16,1,0.3,1);
-z-index: 500; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-}
-#order-summary.visible { transform: translateY(0); }
-.summary-info { flex: 1; min-width: 0; }
-.summary-label {
-font-family: ‘Cinzel’, serif; font-size: 0.92rem; letter-spacing: 0.3em; color: var(–gold-dark); display: block;
-}
-.summary-items {
-font-size: 1.15rem; color: var(–white-dim); font-style: italic;
-margin-top: 0.2rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-.submit-btn {
-font-family: ‘Cinzel’, serif; font-size: clamp(0.92rem,2.8vw,1rem); letter-spacing: 0.2em;
-color: var(–black); background: var(–gold); border: none; padding: 0.9rem 1.4rem;
-cursor: pointer; white-space: nowrap; touch-action: manipulation; transition: background .3s; flex-shrink: 0;
-}
-.submit-btn:active { background: var(–gold-light); }
-
-/* ─── MODAL ─── */
-.modal-overlay {
-position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 800;
-display: flex; align-items: flex-end; justify-content: center;
-opacity: 0; pointer-events: none; transition: opacity .4s ease;
-}
-@media (min-width: 600px) { .modal-overlay { align-items: center; padding: 2rem; } }
-.modal-overlay.active { opacity: 1; pointer-events: all; }
-
-.modal {
-background: var(–black-soft); border: 1px solid rgba(201,168,76,0.25); border-bottom: none;
-padding: 2rem 1.4rem 2rem; width: 100%; max-width: 520px; max-height: 92svh; overflow-y: auto;
-position: relative; transform: translateY(40px); transition: transform .5s cubic-bezier(0.16,1,0.3,1);
--webkit-overflow-scrolling: touch;
-}
-@media (min-width: 600px) { .modal { border-bottom: 1px solid rgba(201,168,76,0.25); padding: 2.8rem 2.2rem; } }
-.modal-overlay.active .modal { transform: translateY(0); }
-
-.modal-handle {
-width: 40px; height: 3px; background: rgba(201,168,76,0.3); border-radius: 2px;
-margin: 0 auto 1.5rem; display: block;
-}
-@media (min-width: 600px) { .modal-handle { display: none; } }
-
-.modal-close {
-position: absolute; top: 1rem; right: 1rem; background: none; border: none;
-color: var(–gold-dark); font-size: 1.1rem; cursor: pointer; padding: 0.5rem; touch-action: manipulation;
-}
-.modal-close:active { color: var(–gold); }
-
-.modal h3 {
-font-family: ‘Cinzel’, serif; font-size: clamp(1.1rem,4vw,1.5rem); font-weight: 400;
-letter-spacing: 0.1em; color: var(–white); margin-bottom: 0.4rem;
-}
-.modal-subtitle { font-style: italic; color: var(–gold-light); font-size: 0.95rem; margin-bottom: 1.8rem; display: block; }
-
-.order-lines { border-top: 1px solid rgba(201,168,76,0.15); margin-bottom: 1.8rem; }
-.order-line {
-display: flex; justify-content: space-between; align-items: center;
-padding: 0.75rem 0; border-bottom: 1px solid rgba(201,168,76,0.08); gap: 1rem;
-}
-.order-line-name { font-size: 0.9rem; color: var(–white-dim); font-style: italic; }
-.order-line-qty { font-family: ‘Cinzel’, serif; font-size: 0.8rem; color: var(–gold); white-space: nowrap; }
-
-.form-group { margin-bottom: 1.1rem; }
-.form-group label {
-font-family: ‘Cinzel’, serif; font-size: 0.9rem; letter-spacing: 0.3em; color: var(–gold-dark);
-display: block; margin-bottom: 0.5rem;
-}
-.form-group input, .form-group textarea {
-width: 100%; background: rgba(201,168,76,0.04); border: 1px solid rgba(201,168,76,0.2);
-color: var(–white); font-family: ‘Cormorant Garamond’, serif; font-size: 1rem;
-padding: 0.8rem 0.9rem; outline: none; transition: border-color .3s; border-radius: 0; -webkit-appearance: none;
-}
-.form-group input:focus, .form-group textarea:focus { border-color: var(–gold); }
-.form-group textarea { height: 70px; resize: none; }
-::placeholder { color: rgba(245,240,232,0.2); font-style: italic; }
-
-.modal-submit {
-width: 100%; background: var(–gold); color: var(–black); font-family: ‘Cinzel’, serif;
-font-size: clamp(0.95rem,2.8vw,1.05rem); letter-spacing: 0.24em; border: none; padding: 1.2rem;
-cursor: pointer; touch-action: manipulation; transition: background .3s; margin-top: 0.5rem;
-}
-.modal-submit:active { background: var(–gold-light); }
-
-.success-view { text-align: center; display: none; }
-.success-view.show { display: block; }
-.success-icon {
-width: 54px; height: 54px; border: 1px solid var(–gold); border-radius: 50%;
-display: flex; align-items: center; justify-content: center;
-margin: 0 auto 1.5rem; font-size: 1.3rem; color: var(–gold);
-}
-
-/* ─── FOOTER ─── */
-footer { text-align: center; padding: 5vh 1.5rem 10vh; border-top: 1px solid rgba(201,168,76,0.08); }
-footer p { font-family: ‘Cinzel’, serif; font-size: clamp(0.38rem,1.8vw,0.55rem); letter-spacing: 0.32em; color: rgba(201,168,76,0.3); }
-
-/* ─── ANIMATIONS ─── */
-@keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-.reveal { opacity: 0; transform: translateY(22px); transition: opacity .7s ease, transform .7s ease; }
-.reveal.visible { opacity: 1; transform: translateY(0); }
+/* ANIMATIONS */
+@keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fi{from{opacity:0}to{opacity:1}}
+.rev{opacity:0;transform:translateY(20px);transition:opacity .8s ease,transform .8s ease}
+.rev.on{opacity:1;transform:translateY(0)}
 </style>
-
 </head>
 <body>
 
-<div class="cursor" id="cursor"></div>
-<div class="cursor-ring" id="cursorRing"></div>
-
-<!-- HERO -->
-
-<section id="hero">
-  <div class="hero-bg"></div>
-  <div class="deco-line top"></div>
-  <div class="deco-line bottom"></div>
-  <p class="hero-eyebrow">PRIVATE COLLECTION<br>BY INVITATION ONLY</p>
-  <h1 class="hero-title">CRAFT4SENSE</h1>
-  <p class="hero-subtitle">in collaboration with Jacob & Co.</p>
-  <div class="hero-divider"></div>
-  <p class="scroll-hint">EXPLORE COLLECTION</p>
-</section>
-
-<!-- INTRO -->
-
-<section id="intro" class="reveal">
-  <span class="section-label">MANIFESTO</span>
-  <p>Some things cannot be purchased - they can only be received.<br>
-  This collection was created for those who understand the difference between <em>possessing</em> and <em>truly appreciating</em>.</p>
-</section>
-
-<!-- COLLECTION -->
-
-<section id="collection">
-  <div class="collection-header reveal">
-    <span class="section-label">PRIVATE COLLECTION · 2024</span>
-    <h2>Select Your Position</h2>
-    <div class="gold-rule"></div>
-  </div>
-
-  <div class="products-grid">
-
-```
-<!-- Cognac 100 -->
-<div class="product-card featured reveal" data-id="1" data-name="Cognac · Century Reserve">
-  <span class="product-age">100</span>
-  <span class="product-age-label">YEARS OF AGEING</span>
-  <h3 class="product-name">Century Reserve</h3>
-  <p class="product-desc">One of a kind. One hundred years of patience, concentrated in a single sip. Aged in hand-selected barrels of French Limousin oak - a testament to time itself.</p>
-  <div class="bottle-icon"></div>
-  <div class="product-price-block">
-    <span class="price-retail">€ 25,000</span>
-    <span class="price-preorder">€ 10,000</span>
-    <span class="price-preorder-label">PRE-ORDER PRICE</span>
-  </div>
-  <div class="qty-control">
-    <button class="qty-btn" onclick="changeQty(this,-1)">−</button>
-    <span class="qty-number">0</span>
-    <button class="qty-btn" onclick="changeQty(this,1)">+</button>
-  </div>
-  <button class="add-btn" onclick="toggleItem(this)">Add to Order</button>
+<!-- GATE -->
+<div id="gate">
+  <div class="g-rule t"></div>
+  <div class="g-rule b"></div>
+  <p class="g-eyebrow">NEW ULTRA LUXURY PROJECT<br>BY INVITATION ONLY</p>
+  <h1 class="g-brand">JACOB&amp;CO</h1>
+  <p class="g-craft">CRAFT4SENSE</p>
+  <div class="g-div"></div>
+  <p class="g-wlabel">PRIVATE COLLECTION</p>
+  <p class="g-wdate">SUMMER - AUTUMN 2026</p>
+  <button class="g-enter" onclick="enter()">ENTER PRIVATE VIEWING</button>
 </div>
 
-<!-- Cognac 60 -->
-<div class="product-card reveal" data-id="2" data-name="Cognac · Diamond Reserve">
-  <span class="product-age">60</span>
-  <span class="product-age-label">YEARS OF AGEING</span>
-  <h3 class="product-name">Diamond Reserve</h3>
-  <p class="product-desc">Six decades of stillness in the cellars of Charente. Rich and velvety, with notes of dried fruit, dark chocolate and aged oak - elegance without compromise.</p>
-  <div class="bottle-icon"></div>
-  <div class="product-price-block">
-    <span class="price-retail">€ 6,000</span>
-    <span class="price-preorder">€ 3,000</span>
-    <span class="price-preorder-label">PRE-ORDER PRICE</span>
-  </div>
-  <div class="qty-control">
-    <button class="qty-btn" onclick="changeQty(this,-1)">−</button>
-    <span class="qty-number">0</span>
-    <button class="qty-btn" onclick="changeQty(this,1)">+</button>
-  </div>
-  <button class="add-btn" onclick="toggleItem(this)">Add to Order</button>
-</div>
+<!-- MAIN -->
+<div id="main">
 
-<!-- Cognac 40 -->
-<div class="product-card reveal" data-id="3" data-name="Cognac · Golden Reserve">
-  <span class="product-age">40</span>
-  <span class="product-age-label">YEARS OF AGEING</span>
-  <h3 class="product-name">Golden Reserve</h3>
-  <p class="product-desc">Forty years of mastery. A perfect balance of maturity and freshness - amber-hued, with a long finish of spice, vanilla, and toasted wood.</p>
-  <div class="bottle-icon"></div>
-  <div class="product-price-block">
-    <span class="price-retail">€ 2,500</span>
-    <span class="price-preorder">€ 1,500</span>
-    <span class="price-preorder-label">PRE-ORDER PRICE</span>
-  </div>
-  <div class="qty-control">
-    <button class="qty-btn" onclick="changeQty(this,-1)">−</button>
-    <span class="qty-number">0</span>
-    <button class="qty-btn" onclick="changeQty(this,1)">+</button>
-  </div>
-  <button class="add-btn" onclick="toggleItem(this)">Add to Order</button>
-</div>
+  <section id="status">
+    <span class="lbl rev">PRIVATE ALLOCATION ONLY</span>
+    <div class="s-line rev"></div>
+    <p class="s-text rev">
+      This collection is available<br>
+      by <em>private allocation only.</em><br>
+      Each release is strictly limited.<br>
+      Allocation is reviewed individually.
+    </p>
+  </section>
 
-<!-- Vodka Gold -->
-<div class="product-card reveal" data-id="4" data-name="Vodka · Or">
-  <span class="product-age" style="font-size:clamp(1.7rem,7vw,2.8rem);letter-spacing:0.03em;">OR</span>
-  <span class="product-age-label">CRAFT4SENSE VODKA</span>
-  <h3 class="product-name">Or - Golden Vodka</h3>
-  <p class="product-desc">Crafted from the finest French wheat, blended by the master artisans of the Cognac region. <em>Or</em> is designed to be savoured at room temperature - never chilled - to reveal its full depth and character.</p>
-  <div class="bottle-icon"></div>
-  <div class="product-price-block">
-    <span class="price-retail">€ 600</span>
-    <span class="price-preorder">€ 300</span>
-    <span class="price-preorder-label">PRE-ORDER PRICE</span>
-  </div>
-  <div class="qty-control">
-    <button class="qty-btn" onclick="changeQty(this,-1)">−</button>
-    <span class="qty-number">0</span>
-    <button class="qty-btn" onclick="changeQty(this,1)">+</button>
-  </div>
-  <button class="add-btn" onclick="toggleItem(this)">Add to Order</button>
-</div>
+  <section id="collection">
+    <div class="col-header rev">
+      <span class="col-brand col-jacobco">JACOB &amp; CO</span>
+      <span class="col-brand col-craft">CRAFT4SENSE</span>
+      <h2 class="col-title">Private Collection</h2>
+      <div class="g-rule-h"></div>
+    </div>
+    <div class="grid">
 
-<!-- Vodka Silver -->
-<div class="product-card reveal" data-id="5" data-name="Vodka · Argent">
-  <span class="product-age" style="font-size:clamp(1.4rem,6vw,2.8rem);letter-spacing:0.02em;">ARGENT</span>
-  <span class="product-age-label">CRAFT4SENSE VODKA</span>
-  <h3 class="product-name">Argent - Silver Vodka</h3>
-  <p class="product-desc">Born from the finest French wheat and shaped by the mastery of Cognac region blending artisans. Pure, precise, and extraordinary in its clarity.</p>
-  <div class="bottle-icon"></div>
-  <div class="product-price-block">
-    <span class="price-retail">€ 500</span>
-    <span class="price-preorder">€ 250</span>
-    <span class="price-preorder-label">PRE-ORDER PRICE</span>
-  </div>
-  <div class="qty-control">
-    <button class="qty-btn" onclick="changeQty(this,-1)">−</button>
-    <span class="qty-number">0</span>
-    <button class="qty-btn" onclick="changeQty(this,1)">+</button>
-  </div>
-  <button class="add-btn" onclick="toggleItem(this)">Add to Order</button>
-</div>
-```
+      <!-- CARD 1 — 60 YEARS -->
+      <div class="card rev" data-id="1" data-name="Cognac · Diamond Reserve 1965" data-price="10000">
+        <span class="c-brand">JACOB &amp; CO</span>
+        <span class="c-num">60</span>
+        <span class="c-age-lbl">YEARS OF AGEING</span>
+        <span class="c-sub">100% COGNAC GRAND CHAMPAGNE</span>
+        <h3 class="c-name">Diamond Reserve 1965</h3>
+        <div class="c-table">
+          <div class="c-row"><span class="c-lbl">VINTAGE</span><span class="c-val">1965</span></div>
+          <div class="c-row"><span class="c-lbl">DEDICATED TO</span><span class="c-val">Jacob Arabo, born 1965</span></div>
+          <div class="c-row"><span class="c-lbl">APPELLATION</span><span class="c-val">Cognac Grand Champagne</span></div>
+          <div class="c-row"><span class="c-lbl">MATURATION</span><span class="c-val">60 years, Limousin oak</span></div>
+          <div class="c-row"><span class="c-lbl">TOTAL PRODUCTION</span><span class="c-val">1,000 bottles</span></div>
+          <div class="c-row"><span class="c-lbl">BOTTLE NUMBERING</span><span class="c-val">001 — 1000</span></div>
+        </div>
+        <div class="c-price-block">
+          <span class="c-price-lbl">PRICE PER BOTTLE</span>
+          <span class="c-price">EUR 10,000</span>
+        </div>
+        <button class="c-req" onclick="toggleCard(this)">REQUEST ALLOCATION</button>
+        <div class="c-exp">
+          <div class="c-exp-inner">
+            <div class="qty-row">
+              <button class="qty-btn" onclick="chQty(this,-1)">−</button>
+              <span class="qty-n">1</span>
+              <button class="qty-btn" onclick="chQty(this,1)">+</button>
+            </div>
+            <button class="c-add" onclick="addOrder(this)">ADD TO ALLOCATION REQUEST</button>
+          </div>
+        </div>
+      </div>
 
-  </div>
-</section>
+      <!-- CARD 2 — 100 YEARS -->
+      <div class="card rev" data-id="2" data-name="Cognac · Century Reserve" data-price="25000">
+        <span class="c-brand">JACOB &amp; CO</span>
+        <span class="c-num">100</span>
+        <span class="c-age-lbl">YEARS OF AGEING</span>
+        <span class="c-sub">100% COGNAC GRAND CHAMPAGNE</span>
+        <h3 class="c-name">Century Reserve</h3>
+        <div class="c-table">
+          <div class="c-row"><span class="c-lbl">VINTAGE</span><span class="c-val">1924</span></div>
+          <div class="c-row"><span class="c-lbl">DEDICATED TO</span><span class="c-val">The Art of Time</span></div>
+          <div class="c-row"><span class="c-lbl">APPELLATION</span><span class="c-val">Cognac Grand Champagne</span></div>
+          <div class="c-row"><span class="c-lbl">MATURATION</span><span class="c-val">100 years, Limousin oak</span></div>
+          <div class="c-row"><span class="c-lbl">TOTAL PRODUCTION</span><span class="c-val">500 bottles</span></div>
+          <div class="c-row"><span class="c-lbl">BOTTLE NUMBERING</span><span class="c-val">001 — 500</span></div>
+        </div>
+        <div class="c-price-block">
+          <span class="c-price-lbl">PRICE PER BOTTLE</span>
+          <span class="c-price">EUR 25,000</span>
+        </div>
+        <button class="c-req" onclick="toggleCard(this)">REQUEST ALLOCATION</button>
+        <div class="c-exp">
+          <div class="c-exp-inner">
+            <div class="qty-row">
+              <button class="qty-btn" onclick="chQty(this,-1)">−</button>
+              <span class="qty-n">1</span>
+              <button class="qty-btn" onclick="chQty(this,1)">+</button>
+            </div>
+            <button class="c-add" onclick="addOrder(this)">ADD TO ALLOCATION REQUEST</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section id="conf" class="rev">
+    <span class="lbl" style="margin-bottom:2rem">CONFIDENTIALITY</span>
+    <p class="conf-txt">All allocations are handled privately.<br>Client identities remain strictly confidential.<br>No public registry of ownership is maintained.</p>
+    <div class="conf-div"></div>
+  </section>
+
+  <footer>
+    <p>CRAFT4SENSE · PRIVATE COLLECTION · JACOB &amp; CO</p>
+    <p style="margin-top:0.8rem">BY INVITATION ONLY</p>
+  </footer>
+
+</div>
 
 <!-- ORDER BAR -->
-
-<div id="order-summary">
-  <div class="summary-info">
-    <span class="summary-label">YOUR PRE-ORDER</span>
-    <p class="summary-items" id="summary-text">-</p>
+<div id="bar">
+  <div class="bar-info">
+    <span class="bar-lbl">ALLOCATION REQUEST</span>
+    <p class="bar-txt" id="bar-txt">-</p>
   </div>
-  <button class="submit-btn" onclick="openModal()">Place Order</button>
+  <button class="bar-btn" onclick="openModal()">SUBMIT REQUEST</button>
 </div>
 
 <!-- MODAL -->
-
-<div class="modal-overlay" id="modal">
-  <div class="modal" id="modal-box">
-    <span class="modal-handle"></span>
-    <button class="modal-close" onclick="closeModal()">✕</button>
-
-```
-<div id="form-view">
-  <h3>Pre-Order</h3>
-  <span class="modal-subtitle">Private Collection · Craft4Sense</span>
-  <div class="order-lines" id="order-lines"></div>
-  <div class="form-group">
-    <label>Your Name</label>
-    <input type="text" id="inp-name" placeholder="First and Last Name" autocomplete="name">
-  </div>
-  <div class="form-group">
-    <label>Contact</label>
-    <input type="text" id="inp-contact" placeholder="+1 (000) 000-0000 · Telegram · WhatsApp" autocomplete="tel">
-  </div>
-  <div class="form-group">
-    <label>Note</label>
-    <textarea id="inp-note" placeholder="Any additional requests…"></textarea>
-  </div>
-  <button class="modal-submit" onclick="submitOrder()">Confirm Pre-Order</button>
-</div>
-
-<div class="success-view" id="success-view">
-  <div class="success-icon">✓</div>
-  <h3 style="margin-bottom:.8rem;">Order Received</h3>
-  <span class="modal-subtitle">Our manager will be in touch shortly</span>
-  <div class="gold-rule"></div>
-  <p style="font-style:italic;color:var(--white-dim);font-size:.95rem;margin-top:1.2rem;line-height:1.8;">
-    Thank you for your trust.<br>Craft4Sense × Jacob & Co.
-  </p>
-</div>
-```
-
+<div class="m-ov" id="modal">
+  <div class="modal">
+    <span class="m-handle"></span>
+    <button class="m-close" onclick="closeModal()">CLOSE</button>
+    <div id="m-form">
+      <span class="m-brand">JACOB &amp; CO</span>
+      <h3 class="m-title">Private Allocation Request</h3>
+      <span class="m-sub">Craft4Sense · Private Collection</span>
+      <div class="m-lines" id="m-lines"></div>
+      <div class="m-terms">
+        <p>Prices are exclusive of VAT. VAT is determined by the country of the recipient and is payable separately upon delivery.</p>
+        <p>Delivery is included in the price.</p>
+        <p>Payment details will be communicated upon allocation confirmation.</p>
+      </div>
+      <div class="f-group"><label>FIRST &amp; LAST NAME *</label><input type="text" id="f-name" placeholder="First and Last Name" autocomplete="name"></div>
+      <div class="f-group"><label>PHONE *</label><input type="tel" id="f-phone" placeholder="+1 (000) 000-0000" autocomplete="tel"></div>
+      <div class="f-group"><label>EMAIL *</label><input type="email" id="f-email" placeholder="your@email.com" autocomplete="email"></div>
+      <div class="f-group"><label>NOTE</label><textarea id="f-note" placeholder="Any additional requests..."></textarea></div>
+      <button class="m-submit" onclick="submitOrder()">CONFIRM ALLOCATION REQUEST</button>
+    </div>
+    <div class="m-success" id="m-success">
+      <div class="m-check">✓</div>
+      <h3 class="m-title">Private Allocation Request Received</h3>
+      <span class="m-sub">A client liaison will contact you directly.</span>
+    </div>
   </div>
 </div>
-
-<!-- FOOTER -->
-
-<footer>
-  <p>CRAFT4SENSE · PRIVATE COLLECTION · JACOB & CO. COLLABORATION · MMXXIV</p>
-  <p style="margin-top:.8rem;">BY INVITATION ONLY</p>
-</footer>
 
 <script>
-  // Custom cursor - desktop only
-  if (window.matchMedia('(hover: hover)').matches) {
-    const cursor = document.getElementById('cursor');
-    const ring = document.getElementById('cursorRing');
-    let mx = -200, my = -200, rx = -200, ry = -200;
-    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
-    (function tick() {
-      cursor.style.left = mx + 'px'; cursor.style.top = my + 'px';
-      rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
-      ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
-      requestAnimationFrame(tick);
-    })();
-    document.querySelectorAll('button,.product-card').forEach(el => {
-      el.addEventListener('mouseenter', () => { cursor.classList.add('hover'); ring.classList.add('hover'); });
-      el.addEventListener('mouseleave', () => { cursor.classList.remove('hover'); ring.classList.remove('hover'); });
-    });
+function enter() {
+  var g = document.getElementById('gate');
+  var m = document.getElementById('main');
+  g.classList.add('out');
+  setTimeout(function(){ g.style.display='none'; m.classList.add('show'); }, 1200);
+}
+
+var obs = new IntersectionObserver(function(entries){
+  entries.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('on'); obs.unobserve(e.target); } });
+}, { threshold: 0.08 });
+
+document.addEventListener('DOMContentLoaded', function(){
+  document.querySelectorAll('.rev').forEach(function(el){ obs.observe(el); });
+  document.getElementById('modal').addEventListener('click', function(e){ if(e.target===this) closeModal(); });
+});
+
+function toggleCard(btn) {
+  var card = btn.closest('.card');
+  var exp = card.querySelector('.c-exp');
+  var isOpen = exp.classList.contains('open');
+  document.querySelectorAll('.c-exp.open').forEach(function(e){ e.classList.remove('open'); });
+  document.querySelectorAll('.card.open').forEach(function(c){ c.classList.remove('open'); });
+  document.querySelectorAll('.c-req').forEach(function(b){ b.textContent='REQUEST ALLOCATION'; });
+  if(!isOpen){
+    exp.classList.add('open'); card.classList.add('open'); btn.textContent='CLOSE';
+    setTimeout(function(){ card.scrollIntoView({behavior:'smooth',block:'nearest'}); }, 150);
   }
+}
 
-  // Scroll reveal
-  const obs = new IntersectionObserver(entries => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
-  }, { threshold: 0.1 });
-  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+function chQty(btn, d) {
+  var n = btn.closest('.qty-row').querySelector('.qty-n');
+  n.textContent = Math.max(1, parseInt(n.textContent) + d);
+}
 
-  // Order state
-  const order = {};
+var order = {};
 
-  function changeQty(btn, delta) {
-    const card = btn.closest('.product-card');
-    const numEl = card.querySelector('.qty-number');
-    let val = Math.max(0, parseInt(numEl.textContent) + delta);
-    numEl.textContent = val;
-    syncCard(card, val);
-    updateSummary();
-  }
+function addOrder(btn) {
+  var card = btn.closest('.card');
+  var id = card.dataset.id;
+  var qty = parseInt(card.querySelector('.qty-n').textContent);
+  order[id] = { name: card.dataset.name, qty: qty, price: parseFloat(card.dataset.price) };
+  btn.textContent = 'ADDED'; btn.classList.add('done');
+  updateBar();
+}
 
-  function toggleItem(btn) {
-    const card = btn.closest('.product-card');
-    const numEl = card.querySelector('.qty-number');
-    let val = parseInt(numEl.textContent) === 0 ? 1 : 0;
-    numEl.textContent = val;
-    syncCard(card, val);
-    updateSummary();
-  }
+function updateBar() {
+  var keys = Object.keys(order);
+  var bar = document.getElementById('bar');
+  if(!keys.length){ bar.classList.remove('show'); return; }
+  bar.classList.add('show');
+  var total = keys.reduce(function(s,k){ return s+order[k].price*order[k].qty; }, 0);
+  document.getElementById('bar-txt').textContent = keys.map(function(k){
+    var p = order[k].name.split('·'); return (p[1]||order[k].name).trim()+' x'+order[k].qty;
+  }).join(' · ')+' | EUR '+total.toLocaleString('en-US');
+}
 
-  function syncCard(card, val) {
-    const id = card.dataset.id;
-    const btn = card.querySelector('.add-btn');
-    if (val > 0) {
-      order[id] = { name: card.dataset.name, qty: val };
-      card.classList.add('selected');
-      btn.classList.add('active');
-      btn.textContent = 'Added ✓';
-    } else {
-      delete order[id];
-      card.classList.remove('selected');
-      btn.classList.remove('active');
-      btn.textContent = 'Add to Order';
-    }
-  }
+function openModal() {
+  if(!Object.keys(order).length) return;
+  var total = Object.keys(order).reduce(function(s,k){ return s+order[k].price*order[k].qty; }, 0);
+  var lines = Object.values(order).map(function(i){
+    return '<div class="m-line"><span class="m-line-n">'+i.name+'</span><span class="m-line-q">'+i.qty+' btl / EUR '+(i.price*i.qty).toLocaleString('en-US')+'</span></div>';
+  }).join('');
+  document.getElementById('m-lines').innerHTML = lines+
+    '<div class="m-line" style="border-top:1px solid rgba(230,196,143,.2);margin-top:.5rem;padding-top:.7rem">'+
+    '<span class="m-line-n" style="letter-spacing:.1em">TOTAL</span>'+
+    '<span class="m-line-q" style="font-size:1.1rem">EUR '+total.toLocaleString('en-US')+'</span></div>';
+  document.getElementById('m-form').style.display='';
+  document.getElementById('m-success').classList.remove('show');
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
 
-  function updateSummary() {
-    const keys = Object.keys(order);
-    const bar = document.getElementById('order-summary');
-    if (keys.length === 0) { bar.classList.remove('visible'); return; }
-    bar.classList.add('visible');
-    document.getElementById('summary-text').textContent =
-      keys.map(k => (order[k].name.split('·')[1]?.trim() || order[k].name) + ' ×' + order[k].qty).join(' · ');
-  }
+function closeModal() {
+  document.getElementById('modal').classList.remove('open');
+  document.body.style.overflow='';
+}
 
-  function openModal() {
-    if (!Object.keys(order).length) return;
-    document.getElementById('order-lines').innerHTML =
-      Object.values(order).map(i =>
-        `<div class="order-line"><span class="order-line-name">${i.name}</span><span class="order-line-qty">${i.qty} btl.</span></div>`
-      ).join('');
-    document.getElementById('form-view').style.display = '';
-    document.getElementById('success-view').classList.remove('show');
-    document.getElementById('modal').classList.add('active');
-    document.body.style.overflow = 'hidden';
-  }
-
-  function closeModal() {
-    document.getElementById('modal').classList.remove('active');
-    document.body.style.overflow = '';
-  }
-
-  document.getElementById('modal').addEventListener('click', function(e) {
-    if (e.target === this) closeModal();
+function submitOrder() {
+  var name = document.getElementById('f-name').value.trim();
+  var phone = document.getElementById('f-phone').value.trim();
+  var email = document.getElementById('f-email').value.trim();
+  var note = document.getElementById('f-note').value.trim();
+  var ok = true;
+  ['f-name','f-phone','f-email'].forEach(function(id){
+    var el = document.getElementById(id);
+    var v = el.value.trim()!=='';
+    el.classList.toggle('err',!v); if(!v) ok=false;
   });
-
-  async function submitOrder() {
-    const name = document.getElementById('inp-name').value.trim();
-    const contact = document.getElementById('inp-contact').value.trim();
-    const note = document.getElementById('inp-note').value.trim();
-    document.getElementById('inp-name').style.borderColor = name ? 'rgba(201,168,76,0.2)' : '#c0392b';
-    document.getElementById('inp-contact').style.borderColor = contact ? 'rgba(201,168,76,0.2)' : '#c0392b';
-    if (!name || !contact) return;
-
-    const btn = document.querySelector('.modal-submit');
-    btn.textContent = 'Sending...';
-    btn.disabled = true;
-
-    const orderList = Object.values(order).map(i => i.name + ' x' + i.qty).join(', ');
-
-    try {
-      const res = await fetch('https://formspree.io/f/xeeldldg', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify({
-          name: name,
-          contact: contact,
-          order: orderList,
-          note: note || '-',
-          _subject: 'NEW PRE-ORDER - Craft4Sense: ' + orderList
-        })
-      });
-      const data = await res.json();
-      if (data.ok || res.ok) {
-        document.getElementById('form-view').style.display = 'none';
-        document.getElementById('success-view').classList.add('show');
-      } else {
-        btn.textContent = 'Error - try again';
-        btn.disabled = false;
-      }
-    } catch(e) {
-      btn.textContent = 'Error - try again';
-      btn.disabled = false;
-    }
-  }
+  if(email.indexOf('@')<1){ ok=false; document.getElementById('f-email').classList.add('err'); }
+  if(!ok) return;
+  var btn = document.querySelector('.m-submit');
+  btn.textContent='Sending...'; btn.disabled=true;
+  var total = Object.keys(order).reduce(function(s,k){ return s+order[k].price*order[k].qty; }, 0);
+  var ol = Object.values(order).map(function(i){ return i.name+' x'+i.qty+' (EUR '+(i.price*i.qty).toLocaleString('en-US')+')'; }).join(', ');
+  fetch('/api/send',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({name:name,phone:phone,email:email,order:ol,total:'EUR '+total.toLocaleString('en-US'),note:note||'-'})
+  }).then(function(r){
+    if(r.ok){ document.getElementById('m-form').style.display='none'; document.getElementById('m-success').classList.add('show'); }
+    else{ btn.textContent='Error - try again'; btn.disabled=false; }
+  }).catch(function(){ btn.textContent='Error - try again'; btn.disabled=false; });
+}
 </script>
 
 </body>
