@@ -3,13 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>CRAFT4SENSE — Private Allocation</title>
+<title>The Jeweler by Jacob&Co — Private Allocation</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Cinzel:wght@400&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{background:#050505;color:#FFFFFF;font-family:'Cinzel',serif;font-weight:400;overflow-x:hidden;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;-webkit-text-size-adjust:100%}
+
+/* TOP WATERMARK */
+#top-watermark{position:fixed;top:0;left:0;right:0;z-index:999;text-align:center;padding:0.45rem 1rem;pointer-events:none}
+#top-watermark span{font-family:'Cinzel',serif;font-size:clamp(0.55rem,1.5vw,0.7rem);letter-spacing:0.3em;color:#E6C48F;opacity:0.45}
 
 /* GATE */
 #gate{position:fixed;inset:0;z-index:100;background:#050505;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:3rem 2rem;transition:opacity 1.2s ease}
@@ -18,13 +22,20 @@ html,body{background:#050505;color:#FFFFFF;font-family:'Cinzel',serif;font-weigh
 .g-rule.t{top:10vh}
 .g-rule.b{bottom:10vh}
 .g-eyebrow{font-family:'Cinzel',serif;font-size:clamp(0.75rem,2.5vw,0.95rem);letter-spacing:0.34em;color:#E6C48F;line-height:2.2;margin-bottom:2.5rem;opacity:0;animation:up 1s ease 0.2s forwards}
-.g-brand{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:clamp(3.5rem,16vw,10rem);letter-spacing:0.03em;color:#F7ECDB;line-height:1;white-space:nowrap;margin-bottom:0.5rem;opacity:0;animation:up 1.2s ease 0.45s forwards}
-.g-craft{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:clamp(1.8rem,7vw,4.5rem);letter-spacing:0.2em;color:#F7ECDB;margin-bottom:0;opacity:0;animation:up 1s ease 0.7s forwards}
+.g-brand{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:clamp(2rem,8vw,5rem);letter-spacing:0.06em;color:#F7ECDB;line-height:1.1;white-space:nowrap;margin-bottom:0.4rem;opacity:0;animation:up 1.2s ease 0.45s forwards}
+.g-subbrand{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:clamp(1.2rem,4vw,2.4rem);letter-spacing:0.18em;color:#E6C48F;margin-bottom:0;opacity:0;animation:up 1s ease 0.7s forwards}
 .g-div{width:1px;height:40px;background:linear-gradient(180deg,#E6C48F,transparent);margin:2.5rem auto;opacity:0;animation:fi 1s ease 1s forwards}
 .g-wlabel{font-family:'Cinzel',serif;font-size:clamp(0.75rem,2.5vw,0.95rem);letter-spacing:0.4em;color:#E6C48F;margin-bottom:0.5rem;opacity:0;animation:fi 1s ease 1.2s forwards}
 .g-wdate{font-family:'Cinzel',serif;font-size:clamp(0.75rem,2.5vw,0.95rem);letter-spacing:0.22em;color:#E6C48F;margin-bottom:3rem;opacity:0;animation:fi 1s ease 1.4s forwards}
-.g-enter{font-family:'Cinzel',serif;font-size:clamp(0.75rem,2.5vw,0.95rem);letter-spacing:0.35em;background:#F7ECDB;color:#050505;border:none;padding:1.1rem 2.5rem;cursor:pointer;-webkit-appearance:none;border-radius:0;display:block;margin:0 auto;opacity:0;animation:fi 1s ease 1.6s forwards;transition:opacity .3s}
+.g-pw-label{font-family:'Cinzel',serif;font-size:clamp(0.65rem,2vw,0.78rem);letter-spacing:0.3em;color:#E6C48F;opacity:0.7;margin-bottom:0.6rem;display:block;opacity:0;animation:fi 1s ease 1.5s forwards}
+.g-pw-wrap{display:flex;gap:0;margin-bottom:2rem;opacity:0;animation:fi 1s ease 1.55s forwards}
+.g-pw-input{font-family:'Cinzel',serif;font-size:clamp(0.75rem,2.5vw,0.95rem);letter-spacing:0.25em;background:#E6C48F10;border:1px solid #E6C48F44;border-right:none;color:#FFFFFF;padding:0.9rem 1.2rem;outline:none;width:220px;border-radius:0;-webkit-appearance:none;transition:border-color .3s}
+.g-pw-input:focus{border-color:#E6C48F}
+.g-pw-input::placeholder{color:#E6C48F33}
+.g-enter{font-family:'Cinzel',serif;font-size:clamp(0.75rem,2.5vw,0.95rem);letter-spacing:0.35em;background:#F7ECDB;color:#050505;border:none;padding:0.9rem 1.6rem;cursor:pointer;-webkit-appearance:none;border-radius:0;display:block;transition:opacity .3s}
 .g-enter:active{opacity:0.8}
+.g-pw-err{font-family:'Cinzel',serif;font-size:clamp(0.65rem,2vw,0.75rem);letter-spacing:0.2em;color:#c0392b;margin-top:0.4rem;opacity:0;transition:opacity .3s;min-height:1.2em}
+.g-pw-err.show{opacity:1}
 
 /* MAIN */
 #main{opacity:0;transition:opacity 1.2s ease}
@@ -41,8 +52,8 @@ html,body{background:#050505;color:#FFFFFF;font-family:'Cinzel',serif;font-weigh
 #collection{padding:4vh 0 16vh;max-width:1300px;margin:0 auto}
 .col-header{text-align:center;padding:0 2rem 8vh}
 .col-brand{font-family:'Cormorant Garamond',serif;font-weight:400;line-height:1.1;letter-spacing:0.03em;color:#F7ECDB;display:block}
-.col-jacobco{font-size:clamp(3rem,9vw,5rem);margin-bottom:0.1rem}
-.col-craft{font-size:clamp(2.1rem,6.5vw,3.6rem);margin-bottom:1.5rem}
+.col-jacobco{font-size:clamp(2rem,6vw,3.5rem);margin-bottom:0.2rem}
+.col-craft{font-size:clamp(1.2rem,3.5vw,2rem);margin-bottom:1.5rem;letter-spacing:0.18em;color:#E6C48F}
 .col-title{font-family:'Cinzel',serif;font-size:clamp(0.75rem,2.5vw,0.95rem);letter-spacing:0.17em;color:#FFFFFF}
 .g-rule-h{width:36px;height:1px;background:linear-gradient(90deg,#8B6914,#E8D5A3,#8B6914);margin:1.5rem auto;opacity:0.7}
 
@@ -53,7 +64,7 @@ html,body{background:#050505;color:#FFFFFF;font-family:'Cinzel',serif;font-weigh
 /* CARD */
 .card{background:#0C0C0C;padding:clamp(2.5rem,5vw,4rem) clamp(1.5rem,4vw,3rem);display:flex;flex-direction:column;align-items:center;text-align:center;transition:background .5s}
 .card.open{background:#0f0f08}
-.c-brand{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:clamp(2rem,7vw,3rem);line-height:1;letter-spacing:0.03em;color:#F7ECDB;margin-bottom:0.3rem;display:block;white-space:nowrap}
+.c-brand{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:clamp(1.4rem,4.5vw,2.2rem);line-height:1.2;letter-spacing:0.05em;color:#F7ECDB;margin-bottom:0.3rem;display:block}
 .c-num{font-family:'Cormorant Garamond',serif;font-weight:400;font-size:clamp(2rem,7vw,3rem);line-height:1;color:#E6C48F}
 .c-age-lbl{font-family:'Cinzel',serif;font-size:clamp(0.75rem,2.5vw,0.95rem);letter-spacing:0.3em;color:#E6C48F;margin-top:0.5rem;display:block}
 .c-sub{font-family:'Cinzel',serif;font-size:clamp(0.75rem,2.5vw,0.95rem);letter-spacing:0.2em;color:#E6C48F;margin:0.6rem 0 0.4rem}
@@ -136,17 +147,25 @@ footer p{font-family:'Cinzel',serif;font-size:clamp(0.65rem,2vw,0.78rem);letter-
 </head>
 <body>
 
+<!-- TOP WATERMARK (all pages) -->
+<div id="top-watermark">
+  <span>Craft4Sense</span>
+</div>
+
 <!-- GATE -->
 <div id="gate">
   <div class="g-rule t"></div>
   <div class="g-rule b"></div>
-  <p class="g-eyebrow">NEW ULTRA LUXURY PROJECT<br>BY INVITATION ONLY</p>
-  <h1 class="g-brand">JACOB&amp;CO</h1>
-  <p class="g-craft">CRAFT4SENSE</p>
+  <p class="g-eyebrow">BY APPOINTMENT ONLY<br>STRICTLY LIMITED QUANTITY</p>
+  <h1 class="g-brand">The Jeweler by Jacob&amp;Co</h1>
+  <p class="g-subbrand">Cognac Grande Champagne</p>
   <div class="g-div"></div>
-  <p class="g-wlabel">PRIVATE COLLECTION</p>
-  <p class="g-wdate">SUMMER - AUTUMN 2026</p>
-  <button class="g-enter" onclick="enter()">ENTER PRIVATE VIEWING</button>
+  <p class="g-pw-label" style="animation-fill-mode:forwards">ENTER YOUR PASSWORD</p>
+  <div class="g-pw-wrap">
+    <input class="g-pw-input" type="password" id="g-pw" placeholder="· · · · · · · ·" onkeydown="if(event.key==='Enter')enter()">
+    <button class="g-enter" onclick="enter()">ENTER</button>
+  </div>
+  <p class="g-pw-err" id="g-pw-err">Incorrect password</p>
 </div>
 
 <!-- MAIN -->
@@ -165,8 +184,8 @@ footer p{font-family:'Cinzel',serif;font-size:clamp(0.65rem,2vw,0.78rem);letter-
 
   <section id="collection">
     <div class="col-header rev">
-      <span class="col-brand col-jacobco">JACOB &amp; CO</span>
-      <span class="col-brand col-craft">CRAFT4SENSE</span>
+      <span class="col-brand col-jacobco">The Jeweler by Jacob &amp; Co</span>
+      <span class="col-brand col-craft">Cognac Grande Champagne</span>
       <h2 class="col-title">Private Collection</h2>
       <div class="g-rule-h"></div>
     </div>
@@ -174,7 +193,7 @@ footer p{font-family:'Cinzel',serif;font-size:clamp(0.65rem,2vw,0.78rem);letter-
 
       <!-- CARD 1 — 60 YEARS -->
       <div class="card rev" data-id="1" data-name="Cognac · Diamond Reserve 1965" data-price="10000">
-        <span class="c-brand">JACOB &amp; CO</span>
+        <span class="c-brand">The Jeweler by Jacob &amp; Co</span>
         <span class="c-num">60</span>
         <span class="c-age-lbl">YEARS OF AGEING</span>
         <span class="c-sub">100% COGNAC GRAND CHAMPAGNE</span>
@@ -183,7 +202,7 @@ footer p{font-family:'Cinzel',serif;font-size:clamp(0.65rem,2vw,0.78rem);letter-
           <div class="c-row"><span class="c-lbl">VINTAGE</span><span class="c-val">1965</span></div>
           <div class="c-row"><span class="c-lbl">DEDICATED TO</span><span class="c-val">Jacob Arabo, born 1965</span></div>
           <div class="c-row"><span class="c-lbl">APPELLATION</span><span class="c-val">Cognac Grand Champagne</span></div>
-          <div class="c-row"><span class="c-lbl">MATURATION</span><span class="c-val">60 years, Limousin oak</span></div>
+          <div class="c-row"><span class="c-lbl">MATURATION</span><span class="c-val">60 years and more, Limousin oak</span></div>
           <div class="c-row"><span class="c-lbl">TOTAL PRODUCTION</span><span class="c-val">1,000 bottles</span></div>
           <div class="c-row"><span class="c-lbl">BOTTLE NUMBERING</span><span class="c-val">001 — 1000</span></div>
         </div>
@@ -206,7 +225,7 @@ footer p{font-family:'Cinzel',serif;font-size:clamp(0.65rem,2vw,0.78rem);letter-
 
       <!-- CARD 2 — 100 YEARS -->
       <div class="card rev" data-id="2" data-name="Cognac · Century Reserve" data-price="25000">
-        <span class="c-brand">JACOB &amp; CO</span>
+        <span class="c-brand">The Jeweler by Jacob &amp; Co</span>
         <span class="c-num">100</span>
         <span class="c-age-lbl">YEARS OF AGEING</span>
         <span class="c-sub">100% COGNAC GRAND CHAMPAGNE</span>
@@ -215,7 +234,7 @@ footer p{font-family:'Cinzel',serif;font-size:clamp(0.65rem,2vw,0.78rem);letter-
           <div class="c-row"><span class="c-lbl">VINTAGE</span><span class="c-val">1924</span></div>
           <div class="c-row"><span class="c-lbl">DEDICATED TO</span><span class="c-val">The Art of Time</span></div>
           <div class="c-row"><span class="c-lbl">APPELLATION</span><span class="c-val">Cognac Grand Champagne</span></div>
-          <div class="c-row"><span class="c-lbl">MATURATION</span><span class="c-val">100 years, Limousin oak</span></div>
+          <div class="c-row"><span class="c-lbl">MATURATION</span><span class="c-val">100 years and more, Limousin oak</span></div>
           <div class="c-row"><span class="c-lbl">TOTAL PRODUCTION</span><span class="c-val">500 bottles</span></div>
           <div class="c-row"><span class="c-lbl">BOTTLE NUMBERING</span><span class="c-val">001 — 500</span></div>
         </div>
@@ -246,7 +265,7 @@ footer p{font-family:'Cinzel',serif;font-size:clamp(0.65rem,2vw,0.78rem);letter-
   </section>
 
   <footer>
-    <p>CRAFT4SENSE · PRIVATE COLLECTION · JACOB &amp; CO</p>
+    <p>CRAFT4SENSE · PRIVATE COLLECTION · THE JEWELER BY JACOB &amp; CO</p>
     <p style="margin-top:0.8rem">BY INVITATION ONLY</p>
   </footer>
 
@@ -267,7 +286,7 @@ footer p{font-family:'Cinzel',serif;font-size:clamp(0.65rem,2vw,0.78rem);letter-
     <span class="m-handle"></span>
     <button class="m-close" onclick="closeModal()">CLOSE</button>
     <div id="m-form">
-      <span class="m-brand">JACOB &amp; CO</span>
+      <span class="m-brand">THE JEWELER BY JACOB &amp; CO</span>
       <h3 class="m-title">Private Allocation Request</h3>
       <span class="m-sub">Craft4Sense · Private Collection</span>
       <div class="m-lines" id="m-lines"></div>
@@ -291,7 +310,13 @@ footer p{font-family:'Cinzel',serif;font-size:clamp(0.65rem,2vw,0.78rem);letter-
 </div>
 
 <script>
+var PASS = 'jacob2026';
+
 function enter() {
+  var pw = document.getElementById('g-pw').value;
+  var err = document.getElementById('g-pw-err');
+  if(pw !== PASS){ err.classList.add('show'); document.getElementById('g-pw').classList.add('err')||null; return; }
+  err.classList.remove('show');
   var g = document.getElementById('gate');
   var m = document.getElementById('main');
   g.classList.add('out');
